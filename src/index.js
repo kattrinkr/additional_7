@@ -2,6 +2,56 @@ module.exports = function solveSudoku(matrix) {
   return solved(matrix, 0, 0);
 
 };
+
+function getCol(initial, col) {
+  var set = new Set();
+  var value = [];
+  for (var i = 0; i < initial.length; i++) {
+    if (initial[i][col] !== 0) {
+      set.add(initial[i][col]);
+    }
+  }
+  for (i = 1; i <= 9; i++) {
+    if (!(set.has(i))) {
+      value.push(i);
+    }
+  }
+  return value;
+}
+
+function getRow(row) {
+  var set = new Set();
+  var value = [];
+  for (var i = 0; i < row.length; i++) {
+    if (row[i] !== 0) {
+      set.add(row[i]);
+    }
+  }
+  for (i = 1; i <= 9; i++) {
+    if (!(set.has(i))) {
+      value.push(i);
+    }
+  }
+  return value;
+}
+
+function getSolved(arr) {
+  arr.sort(function(a,b){
+    return a.length - b.length;
+  });
+
+  var value = [];
+    arr[0].map(function(elem) {
+      if ((arr[0].indexOf(elem) >= 0) && (arr[1].indexOf(elem) >= 0) && (arr[2].indexOf(elem) >= 0)) {
+        value.push(elem);
+      }
+    });
+    if (value.length !== 0) {
+      return value;
+    }
+  return 0;
+}
+
   function solved(initial, row, col){
     if (row === 9) {
       return initial;
@@ -9,9 +59,9 @@ module.exports = function solveSudoku(matrix) {
 
     if (initial[row][col] === 0) {
       var arrSolved = [];
-      arrSolved.push(getRowValue(initial[row]));
-      arrSolved.push(getColValue(initial, col));
-      arrSolved.push(getSquareValue(initial, row, col));
+      arrSolved.push(getRow(initial[row]));
+      arrSolved.push(getCol(initial, col));
+      arrSolved.push(getSquare(initial, row, col));
       var solve = getSolved(arrSolved);
 
       for (var i = 0; i < solve.length; i++) {
@@ -34,39 +84,7 @@ module.exports = function solveSudoku(matrix) {
   }
 
 
-//Данная функция находит решения по строке
-  function getRowValue(row) {
-    var set = new Set();
-    var value = [];
-    for (var i = 0; i < row.length; i++) {
-      if (row[i] !== 0) {
-        set.add(row[i]);
-      }
-    }
-    for (i = 1; i <= 9; i++) {
-      if (!(set.has(i))) {
-        value.push(i);
-      }
-    }
-    return value;
-  }
-
-  function getColValue(initial, col) {
-    var set = new Set();
-    var value = [];
-    for (var i = 0; i < initial.length; i++) {
-      if (initial[i][col] !== 0) {
-        set.add(initial[i][col]);
-      }
-    }
-    for (i = 1; i <= 9; i++) {
-      if (!(set.has(i))) {
-        value.push(i);
-      }
-    }
-    return value;
-  }
-  function getSquareValue(initial, row, col) {
+  function getSquare(initial, row, col) {
     var set = new Set();
     var rowPos = 0; colPos = 0, value = [];
     switch (row) {
@@ -116,22 +134,4 @@ module.exports = function solveSudoku(matrix) {
       }
     }
     return value;
-  }
-
-
-  function getSolved(arrSolved) {
-    arrSolved.sort(function(a,b){
-      return a.length - b.length;
-    });
-
-    var value = [];
-      arrSolved[0].map(function(elem) {
-        if ((arrSolved[0].indexOf(elem) >= 0) && (arrSolved[1].indexOf(elem) >= 0) && (arrSolved[2].indexOf(elem) >= 0)) {
-          value.push(elem);
-        }
-      });
-      if (value.length !== 0) {
-        return value;
-      }
-    return 0;
   }
